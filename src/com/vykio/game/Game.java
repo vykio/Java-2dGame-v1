@@ -1,9 +1,11 @@
 package com.vykio.game;
 
+import com.vykio.game.entities.Player;
 import com.vykio.game.gfx.Colours;
 import com.vykio.game.gfx.Screen;
 import com.vykio.game.gfx.SpriteSheet;
 import com.vykio.game.gfx.Font;
+import com.vykio.game.level.Level;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,6 +32,9 @@ public class Game extends Canvas implements Runnable {
 
     private Screen screen;
     public InputHandler input;
+
+    public Level level;
+    public Player player;
 
     public Game() {
         setMinimumSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
@@ -66,6 +71,12 @@ public class Game extends Canvas implements Runnable {
 
         screen = new Screen(WIDTH, HEIGHT, new SpriteSheet("/spritesheet.png"));
         input = new InputHandler(this);
+
+        level = new Level(64,64);
+
+        player = new Player(level, screen.width/2, screen.height/2, input);
+
+        level.addEntity(player);
     }
 
     public synchronized void start() {
@@ -122,13 +133,13 @@ public class Game extends Canvas implements Runnable {
         }
     }
 
+
     public void tick() {
         tickCount++;
 
-        if (input.up.isPressed()) { screen.yOffset--; }
-        if (input.down.isPressed()) { screen.yOffset++; }
-        if (input.left.isPressed()) { screen.xOffset--; }
-        if (input.right.isPressed()) { screen.xOffset++; }
+
+
+        level.tick();
 
         //screen.xOffset++;
         //screen.yOffset++;
@@ -141,15 +152,24 @@ public class Game extends Canvas implements Runnable {
             return;
         }
 
-        for (int y = 0; y < 32; y++) {
-            for (int x = 0; x < 32; x++) {
-                screen.render(x << 3, y << 3, 0, Colours.get(555, 505, 055, 550), false, false);
+        int xOffset = player.x - (screen.width /2);
+        int yOffset = player.y - (screen.height / 2);
+        level.renderTiles(screen, xOffset, yOffset);
+
+        for (int x = 0; x < level.width; x++) {
+            int colour = Colours.get(-1,-1,-1,000);
+            if (x % 10 == 0 && x != 0) {
+                colour = Colours.get(-1,-1,-1,500);
             }
+            Font.render((x % 10) + "", screen, (x*8),0, colour, 1);
         }
 
+        level.renderEntities(screen);
+        Font.render("Speed:" + player.speed + "", screen, screen.xOffset, screen.yOffset+ screen.height/2, Colours.get(-1, -1, -1, 000), 1);
+        /*
         String msg = "Hello, world!";
         Font.render("Hello, world!", screen, screen.xOffset+screen.width/2 - (msg.length()*8/2), screen.yOffset+ screen.height/2, Colours.get(-1,-1,-1,000));
-
+        */
 
         for (int y = 0; y < screen.height; y++) {
             for (int x = 0; x < screen.width; x++) {

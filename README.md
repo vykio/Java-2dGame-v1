@@ -9,9 +9,9 @@
 - [x] Colour & Rendering Optimisation
 - [x] Mirroring the sprites
 - [x] Rendering some fonts
-- [ ] level/tile development
-- [ ] Making of the first mob : the player
-- [ ] Scaling things up
+- [x] level/tile development
+- [x] Making of the first mob : the player
+- [x] Scaling things up
 - [ ] walking animation
 - [ ] collision box
 - [ ] loading in levels
