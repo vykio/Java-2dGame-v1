@@ -6,9 +6,9 @@
 - [x] Creating sprite sheet
 - [x] Displaying the Sprite sheet
 - [x] Basic Input Handling
-- [ ] Colour & Rendering Optimisation
-- [ ] Mirroring the sprites
-- [ ] Rendering some fonts
+- [x] Colour & Rendering Optimisation
+- [x] Mirroring the sprites
+- [x] Rendering some fonts
 - [ ] level/tile development
 - [ ] Making of the first mob : the player
 - [ ] Scaling things up
