@@ -4,6 +4,10 @@ import com.vykio.game.entities.Entity;
 import com.vykio.game.gfx.Screen;
 import com.vykio.game.level.tiles.Tile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,17 +19,69 @@ public class Level {
 
     public List<Entity> entities = new ArrayList<Entity>();
 
-    public Level(int width, int height) {
-        tiles = new byte[width * height];
-        this.width = width;
-        this.height = height;
-        this.generateLevel();
+    private String imagePath;
+    private BufferedImage image;
+
+    public Level(String imagePath) {
+
+        if (imagePath != null) {
+            this.imagePath = imagePath;
+            this.loadLevelFromFile();
+        } else {
+            // Default level
+            this.width = 64;
+            this.height = 64;
+            tiles = new byte[width * height];
+            this.generateLevel();
+        }
+
+
+    }
+
+    private void loadLevelFromFile() {
+        try {
+            this.image = ImageIO.read(Level.class.getResource(this.imagePath));
+            this.width = image.getWidth();
+            this.height = image.getHeight();
+            tiles = new byte[width * height];
+
+            this.loadTiles();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadTiles() {
+        int[] tileColours = this.image.getRGB(0,0,width, height,null,0,width);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                tileCheck: for (Tile t : Tile.tiles) {
+                    if (t != null && t.getLevelColour() == tileColours[x + y * width]) {
+                        this.tiles[x + y * width] = t.getId();
+                        break tileCheck;
+                    }
+                }
+            }
+        }
+    }
+
+    private void saveLevelToFile() {
+        try {
+            ImageIO.write(image, "png", new File(Level.class.getResource(this.imagePath).getFile()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void alterTile(int x, int y, Tile newTile) {
+        this.tiles[x + y * width] = newTile.getId();
+        image.setRGB(x,y, newTile.getLevelColour());
     }
 
     public void generateLevel() {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                if (x * y % 10 < 5) {
+                if (x * y % 10 < 7) {
                     tiles[x + y * width] = Tile.GRASS.getId();
                 } else {
                     tiles[x + y * width] = Tile.STONE.getId();
@@ -39,6 +95,14 @@ public class Level {
         for (Entity e : entities) {
             e.tick();
         }
+
+        for (Tile t : Tile.tiles) {
+            if (t == null) {
+                break;
+            } else {
+                t.tick();
+            }
+        }
     }
 
     public void renderTiles(Screen screen, int xOffset, int yOffset) {
@@ -47,11 +111,15 @@ public class Level {
         if (yOffset < 0) yOffset = 0;
         if (yOffset > ((height << 3) - screen.height)) yOffset = ((height << 3) - screen.height);
 
+        if(screen.width > width * 8)
+            xOffset = (screen.width - (width * 8)) / 2 * -1;
+        if(screen.height > height * 8)
+            yOffset = (screen.height - (height * 8)) / 2 * -1;
         screen.setOffset(xOffset, yOffset);
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                getTiles(x,y).render(screen, this, x << 3 , y << 3);
+                getTile(x,y).render(screen, this, x << 3 , y << 3);
             }
         }
     }
@@ -62,8 +130,8 @@ public class Level {
         }
     }
 
-    private Tile getTiles(int x, int y) {
-        if (x < 0 || x > width || y < 0 || y > height) return Tile.VOID;
+    public Tile getTile(int x, int y) {
+        if (0 > x || x >= width || 0 > y || y >= height) return Tile.VOID;
         return Tile.tiles[tiles[x+y*width]];
     }
 

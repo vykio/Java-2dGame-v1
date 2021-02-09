@@ -15,8 +15,8 @@ import java.awt.image.DataBufferInt;
 
 public class Game extends Canvas implements Runnable {
 
-    public static final int WIDTH = 160;
-    public static final int HEIGHT = WIDTH / 12*9;
+    public static final int WIDTH = 500;
+    public static final int HEIGHT = WIDTH / 16*9;
     public static final int SCALE = 3;
     public static final String NAME = "Game";
 
@@ -24,6 +24,7 @@ public class Game extends Canvas implements Runnable {
 
     public boolean running = false;
     public int tickCount = 0;
+    public int current_fps = 0;
 
     private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
@@ -72,9 +73,9 @@ public class Game extends Canvas implements Runnable {
         screen = new Screen(WIDTH, HEIGHT, new SpriteSheet("/spritesheet.png"));
         input = new InputHandler(this);
 
-        level = new Level(64,64);
+        level = new Level("/levels/water_test_level.png");
 
-        player = new Player(level, screen.width/2, screen.height/2, input);
+        player = new Player(level, screen.xOffset+ (level.width << 3)/2, screen.yOffset + (level.height <<3) /2, input);
 
         level.addEntity(player);
     }
@@ -114,11 +115,11 @@ public class Game extends Canvas implements Runnable {
                 shouldRender = true;
             }
 
-            try {
+            /*try {
                 Thread.sleep(2); // bloquer les frames pour passer de 600.000 frames à ~440
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
             if (shouldRender){
                 frames++;
                 render();
@@ -126,6 +127,7 @@ public class Game extends Canvas implements Runnable {
 
             if (System.currentTimeMillis() - lastTimer > 1000) { // > 1 seconde
                 lastTimer += 1000;
+                current_fps = frames;
                 System.out.println(ticks + " ticks, "+ frames + " frames");
                 frames = 0;
                 ticks = 0;
@@ -156,16 +158,16 @@ public class Game extends Canvas implements Runnable {
         int yOffset = player.y - (screen.height / 2);
         level.renderTiles(screen, xOffset, yOffset);
 
-        for (int x = 0; x < level.width; x++) {
+        /*for (int x = 0; x < level.width; x++) {
             int colour = Colours.get(-1,-1,-1,000);
             if (x % 10 == 0 && x != 0) {
                 colour = Colours.get(-1,-1,-1,500);
             }
             Font.render((x % 10) + "", screen, (x*8),0, colour, 1);
-        }
+        }*/
 
         level.renderEntities(screen);
-        Font.render("Speed:" + player.speed + "", screen, screen.xOffset, screen.yOffset+ screen.height/2, Colours.get(-1, -1, -1, 000), 1);
+        Font.render("fps:" + current_fps + "", screen, screen.xOffset, screen.yOffset+ screen.height-9, Colours.get(-1, -1, -1, 000), 1);
         /*
         String msg = "Hello, world!";
         Font.render("Hello, world!", screen, screen.xOffset+screen.width/2 - (msg.length()*8/2), screen.yOffset+ screen.height/2, Colours.get(-1,-1,-1,000));

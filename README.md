@@ -12,10 +12,10 @@
 - [x] level/tile development
 - [x] Making of the first mob : the player
 - [x] Scaling things up
-- [ ] walking animation
-- [ ] collision box
-- [ ] loading in levels
-- [ ] animated tiles & swimming animations
+- [x] walking animation
+- [x] collision box
+- [x] loading in levels
+- [x] animated tiles & swimming animations
 - [ ] preparing for multiplayer
 - [ ] UDP communication
 - [ ] Login packet
