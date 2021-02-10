@@ -2,6 +2,7 @@ package com.vykio.game.entities;
 
 import com.vykio.game.InputHandler;
 import com.vykio.game.gfx.Colours;
+import com.vykio.game.gfx.Font;
 import com.vykio.game.gfx.Screen;
 import com.vykio.game.level.Level;
 import com.vykio.game.level.tiles.Tile;
@@ -15,9 +16,12 @@ public class Player extends Mob {
 
     private int tickCount = 0;
 
-    public Player(Level level, int x, int y, InputHandler input) {
+    private String username;
+
+    public Player(Level level, int x, int y, InputHandler input, String username) {
         super(level, "Player", x, y, 1);
         this.input = input;
+        this.username = username;
     }
 
     @Override
@@ -96,6 +100,10 @@ public class Player extends Mob {
             screen.render(xOffset + (modifier * flipBottom), yOffset + modifier, xTile + (yTile +1) * 32, colour, flipBottom, scale);
             screen.render(xOffset + modifier - (modifier * flipBottom), yOffset + modifier, xTile +1 + (yTile+1) * 32, colour, flipBottom, scale);
 
+        }
+
+        if (username != null) {
+            Font.render(username, screen, xOffset - (username.length() - 1) /2 * 8, yOffset - 10, Colours.get(-1,-1,-1,555), 1);
         }
 
     }

@@ -16,8 +16,8 @@
 - [x] collision box
 - [x] loading in levels
 - [x] animated tiles & swimming animations
-- [ ] preparing for multiplayer
-- [ ] UDP communication
+- [x] preparing for multiplayer
+- [x] UDP communication
 - [ ] Login packet
 - [ ] Cleaning up login packet
 - [ ] Disconnect packet

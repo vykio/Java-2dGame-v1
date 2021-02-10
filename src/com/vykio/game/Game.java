@@ -6,16 +6,19 @@ import com.vykio.game.gfx.Screen;
 import com.vykio.game.gfx.SpriteSheet;
 import com.vykio.game.gfx.Font;
 import com.vykio.game.level.Level;
+import com.vykio.game.net.GameClient;
+import com.vykio.game.net.GameServer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.nio.charset.StandardCharsets;
 
 public class Game extends Canvas implements Runnable {
 
-    public static final int WIDTH = 500;
+    public static final int WIDTH = 300;
     public static final int HEIGHT = WIDTH / 16*9;
     public static final int SCALE = 3;
     public static final String NAME = "Game";
@@ -25,6 +28,7 @@ public class Game extends Canvas implements Runnable {
     public boolean running = false;
     public int tickCount = 0;
     public int current_fps = 0;
+    public int current_ticks = 0;
 
     private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
@@ -36,6 +40,10 @@ public class Game extends Canvas implements Runnable {
 
     public Level level;
     public Player player;
+
+
+    private GameClient socketClient;
+    private GameServer socketServer;
 
     public Game() {
         setMinimumSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
@@ -75,14 +83,25 @@ public class Game extends Canvas implements Runnable {
 
         level = new Level("/levels/water_test_level.png");
 
-        player = new Player(level, screen.xOffset+ (level.width << 3)/2, screen.yOffset + (level.height <<3) /2, input);
+        player = new Player(level, screen.xOffset+ (level.width << 3)/2, screen.yOffset + (level.height <<3) /2, input, JOptionPane.showInputDialog(this,"Please enter a username:"));
 
         level.addEntity(player);
+
+        socketClient.sendData("ping".getBytes());
     }
 
     public synchronized void start() {
         running = true;
         new Thread(this).start(); //Running "run" function
+
+        if (JOptionPane.showConfirmDialog(this,"Do you want to run the server") == 0) {
+            socketServer = new GameServer(this);
+            socketServer.start();
+        }
+
+        socketClient = new GameClient(this, "localhost");
+        socketClient.start();
+
     }
 
     public synchronized void stop() {
@@ -128,7 +147,8 @@ public class Game extends Canvas implements Runnable {
             if (System.currentTimeMillis() - lastTimer > 1000) { // > 1 seconde
                 lastTimer += 1000;
                 current_fps = frames;
-                System.out.println(ticks + " ticks, "+ frames + " frames");
+                current_ticks = ticks;
+                //System.out.println(ticks + " ticks, "+ frames + " frames");
                 frames = 0;
                 ticks = 0;
             }
@@ -167,7 +187,7 @@ public class Game extends Canvas implements Runnable {
         }*/
 
         level.renderEntities(screen);
-        Font.render("fps:" + current_fps + "", screen, screen.xOffset, screen.yOffset+ screen.height-9, Colours.get(-1, -1, -1, 000), 1);
+        Font.render("fps:" + current_fps + " ticks:"+ current_ticks, screen, screen.xOffset, screen.yOffset+ screen.height-9, Colours.get(-1, -1, -1, 000), 1);
         /*
         String msg = "Hello, world!";
         Font.render("Hello, world!", screen, screen.xOffset+screen.width/2 - (msg.length()*8/2), screen.yOffset+ screen.height/2, Colours.get(-1,-1,-1,000));
