@@ -18,13 +18,13 @@
 - [x] animated tiles & swimming animations
 - [x] preparing for multiplayer
 - [x] UDP communication
-- [ ] Login packet
-- [ ] Cleaning up login packet
-- [ ] Disconnect packet
-- [ ] Converting to an applet
+- [x] Login packet
+- [x] Cleaning up login packet
+- [x] Disconnect packet
 
 ## Let's go further
 
+- [ ] Share position on server
 - [ ] Enemies
 - [ ] Items
 - [ ] Inventory

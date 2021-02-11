@@ -1,6 +1,7 @@
 package com.vykio.game;
 
 import com.vykio.game.entities.Player;
+import com.vykio.game.entities.PlayerMP;
 import com.vykio.game.gfx.Colours;
 import com.vykio.game.gfx.Screen;
 import com.vykio.game.gfx.SpriteSheet;
@@ -8,6 +9,7 @@ import com.vykio.game.gfx.Font;
 import com.vykio.game.level.Level;
 import com.vykio.game.net.GameClient;
 import com.vykio.game.net.GameServer;
+import com.vykio.game.net.packets.Packet00Login;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +25,7 @@ public class Game extends Canvas implements Runnable {
     public static final int SCALE = 3;
     public static final String NAME = "Game";
 
-    private JFrame frame;
+    public JFrame frame;
 
     public boolean running = false;
     public int tickCount = 0;
@@ -37,13 +39,14 @@ public class Game extends Canvas implements Runnable {
 
     private Screen screen;
     public InputHandler input;
+    public WindowHandler windowHandler;
 
     public Level level;
     public Player player;
 
 
-    private GameClient socketClient;
-    private GameServer socketServer;
+    public GameClient socketClient;
+    public GameServer socketServer;
 
     public Game() {
         setMinimumSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
@@ -78,16 +81,26 @@ public class Game extends Canvas implements Runnable {
             }
         }
 
+        windowHandler = new WindowHandler(this);
+
         screen = new Screen(WIDTH, HEIGHT, new SpriteSheet("/spritesheet.png"));
         input = new InputHandler(this);
 
         level = new Level("/levels/water_test_level.png");
 
-        player = new Player(level, screen.xOffset+ (level.width << 3)/2, screen.yOffset + (level.height <<3) /2, input, JOptionPane.showInputDialog(this,"Please enter a username:"));
+        player = new PlayerMP(level, 100, 100, input, JOptionPane.showInputDialog(this,"Please enter a username:"),
+                null, -1);
 
         level.addEntity(player);
 
-        socketClient.sendData("ping".getBytes());
+        Packet00Login loginPacket = new Packet00Login(player.getUsername());
+
+        if (socketServer != null) {
+            socketServer.addConnection((PlayerMP) player, loginPacket);
+        }
+
+        //socketClient.sendData("ping".getBytes());
+        loginPacket.writeData(socketClient);
     }
 
     public synchronized void start() {
