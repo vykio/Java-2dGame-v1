@@ -80,6 +80,7 @@ public class GameServer extends Thread {
         }
     }
 
+
     private void handleMove(Packet02Move packet) {
         if (getPlayerMP(packet.getUsername()) != null) {
             int index = getPlayerMPIndex(packet.getUsername());
@@ -110,7 +111,7 @@ public class GameServer extends Thread {
 
             } else {
                 sendData(packetLogin.getData(), p.ipAddress, p.port);
-                packetLogin = new Packet00Login(p.getUsername());
+                packetLogin = new Packet00Login(p.getUsername(), p.x, p.y);
                 sendData(packetLogin.getData(), player.ipAddress, player.port);
             }
         }
