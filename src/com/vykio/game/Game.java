@@ -16,7 +16,6 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.nio.charset.StandardCharsets;
 
 public class Game extends Canvas implements Runnable {
 
@@ -182,8 +181,10 @@ public class Game extends Canvas implements Runnable {
         //screen.yOffset++;
     }
 
+    Graphics g;
+    BufferStrategy bs;
     public void render() {
-        BufferStrategy bs = getBufferStrategy();
+        bs = getBufferStrategy();
         if (bs == null) {
             createBufferStrategy(3);
             return;
@@ -215,10 +216,10 @@ public class Game extends Canvas implements Runnable {
             }
         }
 
-        Graphics g = bs.getDrawGraphics();
+        g = bs.getDrawGraphics();
 
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-
+        image.flush();
         g.dispose();
         bs.show();
     }

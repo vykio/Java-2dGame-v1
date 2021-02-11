@@ -29,6 +29,7 @@ public class GameServer extends Thread {
     }
 
     public void run() {
+
         while(true) {
             byte[] data = new byte[1024];
             DatagramPacket packet = new DatagramPacket(data, data.length);
@@ -73,7 +74,7 @@ public class GameServer extends Thread {
 
                 break;
             case MOVE:
-                System.out.println("move");
+                //System.out.println("move");
                 packet = new Packet02Move(data);
                 this.handleMove(((Packet02Move) packet));
         }
