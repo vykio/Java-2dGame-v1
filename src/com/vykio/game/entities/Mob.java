@@ -56,4 +56,28 @@ public abstract class Mob extends Entity {
         return !lastTile.equals(newTile) && newTile.isSolid();
     }
 
+    public int getNumSteps() {
+        return numSteps;
+    }
+
+    public boolean isMoving() {
+        return isMoving;
+    }
+
+    public int getMovingDir() {
+        return movingDir;
+    }
+
+    public void setNumSteps(int numSteps) {
+        this.numSteps = numSteps;
+    }
+
+    public void setMoving(boolean isMoving) {
+        this.isMoving = isMoving;
+    }
+
+    public void setMovingDir(int movingDir) {
+        this.movingDir = movingDir;
+    }
+
 }

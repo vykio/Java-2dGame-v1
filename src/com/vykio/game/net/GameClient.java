@@ -5,6 +5,7 @@ import com.vykio.game.entities.PlayerMP;
 import com.vykio.game.net.packets.Packet;
 import com.vykio.game.net.packets.Packet00Login;
 import com.vykio.game.net.packets.Packet01Disconnect;
+import com.vykio.game.net.packets.Packet02Move;
 
 import javax.xml.crypto.Data;
 import java.io.IOException;
@@ -66,7 +67,16 @@ public class GameClient extends Thread {
                 game.level.removePlayerMP(((Packet01Disconnect) packet).getUsername());
 
                 break;
+            case MOVE:
+                packet = new Packet02Move(data);
+                handleMove((Packet02Move) packet);
+                break;
         }
+    }
+
+    private void handleMove(Packet02Move packet) {
+        this.game.level.movePlayer(packet.getUsername(), packet.getX(), packet.getY(), packet.getNumSteps(),
+                packet.isMoving(), packet.getMovingDir());
     }
 
     public void sendData(byte[] data){

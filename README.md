@@ -24,7 +24,8 @@
 
 ## Let's go further
 
-- [ ] Share position on server
+- [x] Share position on server
+- [ ] RE OPTIMIZE CODE !!!
 - [ ] Enemies
 - [ ] Items
 - [ ] Inventory

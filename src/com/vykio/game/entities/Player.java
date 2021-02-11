@@ -1,11 +1,13 @@
 package com.vykio.game.entities;
 
+import com.vykio.game.Game;
 import com.vykio.game.InputHandler;
 import com.vykio.game.gfx.Colours;
 import com.vykio.game.gfx.Font;
 import com.vykio.game.gfx.Screen;
 import com.vykio.game.level.Level;
 import com.vykio.game.level.tiles.Tile;
+import com.vykio.game.net.packets.Packet02Move;
 
 public class Player extends Mob {
 
@@ -49,6 +51,11 @@ public class Player extends Mob {
         if (xa != 0 || ya != 0) {
             move(xa,ya);
             isMoving = true;
+
+            Packet02Move packet = new Packet02Move(this.getUsername(), this.x, this.y, this.numSteps, this.isMoving,
+                    this.movingDir);
+            packet.writeData(Game.game.socketClient);
+
         } else {
             isMoving = false;
         }

@@ -136,11 +136,11 @@ public class Level {
         return Tile.tiles[tiles[x+y*width]];
     }
 
-    public void addEntity(Entity entity) {
+    public synchronized void addEntity(Entity entity) {
         this.entities.add(entity);
     }
 
-    public void removePlayerMP(String username) {
+    public synchronized void removePlayerMP(String username) {
         int index = 0;
 
         for (Entity e : entities) {
@@ -150,5 +150,26 @@ public class Level {
             index++;
         }
         this.entities.remove(index);
+    }
+
+    private int getPlayerMPIndex(String username) {
+        int index = 0;
+        for (Entity e : this.entities) {
+            if (e instanceof PlayerMP && ((PlayerMP) e).getUsername().equals(username)) {
+                break;
+            }
+            index++;
+        }
+        return index;
+    }
+
+    public synchronized void movePlayer(String username, int x, int y, int numSteps, boolean isMoving, int movingDir) {
+        int index = getPlayerMPIndex(username);
+        PlayerMP player = (PlayerMP) this.entities.get(index);
+        player.x = x;
+        player.y = y;
+        player.setMoving(isMoving);
+        player.setNumSteps(numSteps);
+        player.setMovingDir(movingDir);
     }
 }

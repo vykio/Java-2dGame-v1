@@ -5,6 +5,7 @@ import com.vykio.game.entities.PlayerMP;
 import com.vykio.game.net.packets.Packet;
 import com.vykio.game.net.packets.Packet00Login;
 import com.vykio.game.net.packets.Packet01Disconnect;
+import com.vykio.game.net.packets.Packet02Move;
 
 import java.io.IOException;
 import java.net.*;
@@ -71,9 +72,25 @@ public class GameServer extends Thread {
                 this.removeConnection((Packet01Disconnect) packet);
 
                 break;
+            case MOVE:
+                System.out.println("move");
+                packet = new Packet02Move(data);
+                this.handleMove(((Packet02Move) packet));
         }
     }
 
+    private void handleMove(Packet02Move packet) {
+        if (getPlayerMP(packet.getUsername()) != null) {
+            int index = getPlayerMPIndex(packet.getUsername());
+            PlayerMP player = this.connectedPlayers.get(index);
+            player.x = packet.getX();
+            player.y = packet.getY();
+            player.setMoving(packet.isMoving());
+            player.setMovingDir(packet.getMovingDir());
+            player.setNumSteps(packet.getNumSteps());
+            packet.writeData(this);
+        }
+    }
 
 
     public void addConnection(PlayerMP player, Packet00Login packet) {
