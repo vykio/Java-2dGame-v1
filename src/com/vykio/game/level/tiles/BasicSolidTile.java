@@ -6,4 +6,9 @@ public class BasicSolidTile extends BasicTile {
         super(id, x, y, tileColour, levelColour);
         this.solid = true;
     }
+
+    public BasicSolidTile(int id, int x, int y, int tileColour, int levelColour, int[][] bitmask) {
+        this(id, x,y,tileColour, levelColour);
+        this.bitmask = bitmask;
+    }
 }

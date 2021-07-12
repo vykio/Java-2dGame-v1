@@ -44,7 +44,9 @@ public class Screen {
         int scaleMap = scale - 1;
         int xTile = tile % 32;
         int yTile = tile / 32;
+        //System.out.println("xTile:"+xTile + " yTile:" + yTile);
         int tileOffset = (xTile << 3) + (yTile << 3) * sheet.width;
+        //System.out.println("Tile offset: " + tileOffset);
 
         for (int y = 0; y < 8; y++) {
             int ySheet = y;
@@ -61,6 +63,8 @@ public class Screen {
 
                 int xPixel = x + xPos + (x * scaleMap) - ((scaleMap << 3) / 2);
 
+                //System.out.println("xSheet:" + (xSheet + ySheet
+                        //* sheet.width + tileOffset));
                 int col = (colour >> ( sheet.pixels[xSheet + ySheet
                         * sheet.width + tileOffset] * 8)) & 255;
                 if (col < 255) {

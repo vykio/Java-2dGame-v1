@@ -60,10 +60,10 @@ public class Player extends Mob {
             isMoving = false;
         }
 
-        if (level.getTile(this.x >> 3, this.y >> 3).getId() == Tile.WATER.getId()) {
+        if (level.getTile("Tiles", this.x >> 3, this.y >> 3).getId() == Tile.WATER.getId()) {
             isSwimming = true;
         }
-        if (isSwimming && level.getTile(this.x >> 3, this.y >> 3).getId() != Tile.WATER.getId()) {
+        if (isSwimming && level.getTile("Tiles",this.x >> 3, this.y >> 3).getId() != Tile.WATER.getId()) {
             isSwimming = false;
         }
 

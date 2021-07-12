@@ -7,6 +7,7 @@ import com.vykio.game.gfx.Screen;
 import com.vykio.game.gfx.SpriteSheet;
 import com.vykio.game.gfx.Font;
 import com.vykio.game.level.Level;
+import com.vykio.game.level.tiles.Tile;
 import com.vykio.game.net.GameClient;
 import com.vykio.game.net.GameServer;
 import com.vykio.game.net.packets.Packet00Login;
@@ -83,6 +84,8 @@ public class Game extends Canvas implements Runnable {
         }
 
         windowHandler = new WindowHandler(this);
+
+        Tile.initTiles();
 
         screen = new Screen(WIDTH, HEIGHT, new SpriteSheet("/spritesheet.png"));
         input = new InputHandler(this);
@@ -204,6 +207,11 @@ public class Game extends Canvas implements Runnable {
 
         level.renderEntities(screen);
         Font.render("fps:" + current_fps + " ticks:"+ current_ticks, screen, screen.xOffset, screen.yOffset+ screen.height-9, Colours.get(-1, -1, -1, 000), 1);
+        if (socketServer != null) {
+            if (socketServer.isRunning) {
+                Font.render("Server running ("+socketServer.getPlayerNumber()+" online)", screen, screen.xOffset, screen.yOffset+ screen.height-20, Colours.get(-1, -1, -1, 300), 1);
+            }
+        }
         /*
         String msg = "Hello, world!";
         Font.render("Hello, world!", screen, screen.xOffset+screen.width/2 - (msg.length()*8/2), screen.yOffset+ screen.height/2, Colours.get(-1,-1,-1,000));

@@ -15,11 +15,13 @@ import java.util.List;
 
 public class GameServer extends Thread {
 
+    public boolean isRunning = false;
     private DatagramSocket socket;
     private Game game;
     private List<PlayerMP> connectedPlayers = new ArrayList<PlayerMP>();
 
     public GameServer(Game game) {
+        this.isRunning = true;
         this.game = game;
         try {
             this.socket = new DatagramSocket(1331);
@@ -144,6 +146,10 @@ public class GameServer extends Thread {
             index++;
         }
         return index;
+    }
+
+    public int getPlayerNumber() {
+        return connectedPlayers.size();
     }
 
     public void sendData(byte[] data, InetAddress ipAddress, int port){

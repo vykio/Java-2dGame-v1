@@ -26,10 +26,10 @@
 
 - [x] Share position on server
 - [x] RE OPTIMIZE CODE !!!
-- [ ] Auto-tile using Tile Bitmasking
-  - [ ] Find a way to modify each tile based on certain value (maybe in Level Generation Code)
-  - [ ] Quick tileset for testing purposes
-  - [ ] Implement the algorithm
+- [x] Auto-tile using Tile Bitmasking
+  - [x] Find a way to modify each tile based on certain value (maybe in Level Generation Code)
+  - [x] Quick tileset for testing purposes
+  - [x] Implement the algorithm
 - [ ] Enemies
 - [ ] Items
 - [ ] Inventory
